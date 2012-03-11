@@ -6,18 +6,36 @@ OBJECTS := main.o
 MAIN := main
 CC := g++
 OUTPUT := iris
+LEAKFLAGS := --leak-check=full 
+
+help:
+	@cat man/makehelp
 
 objects:
+	@echo "compiling source..."
 	@$(CC) -g $(CFLAGS) -c $(FILES)
 
 exe:
+	@echo "linking objects..."
 	@$(CC) -g $(CFLAGS) $(OBJECTS) -o $(OUTPUT)
 
 clean:
+	@echo "removing objects..."
 	@rm $(OBJECTS)
 
 all:
 	@make -s objects
 	@make -s exe
 	@make -s clean
-	@echo "Completed $(OUTPUT)"
+	@echo "compiled $(OUTPUT)!"
+
+leak:
+	@make -s all
+	@echo "checking $(OUTPUT) for leaks..."
+	@valgrind $(LEAKFLAGS) ./$(OUTPUT)
+
+leaklog:
+	@make -s all
+	@echo "checking $(OUTPUT) for leaks and recording to $(LEAKFILE)"
+	@valgrind $(LEAKFLAGS) --log-file=$(LEAKFILE) ./$(OUTPUT)
+
