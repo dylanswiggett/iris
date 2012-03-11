@@ -1,6 +1,6 @@
 # Makefile for Unix/Linux based systems only
 
-CFLAGS := -Wall -lm -I/usr/local/include/SDL
+CFLAGS := -Wall -lm -I/usr/local/include/SDL -lSDL -lGL -lGLU
 FILES := main.cpp
 OBJECTS := main.o
 MAIN := main
