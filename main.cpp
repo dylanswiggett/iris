@@ -10,15 +10,15 @@ using namespace std;
 /*
  * Define the basic parameters for the SDL window
  */
-#define SCREEN_WIDTH  640;
-#define SCREEN_HEIGHT 480;
-#define SCREEN_BPP    16;	//Bits per pixel
+#define SCREEN_WIDTH  640
+#define SCREEN_HEIGHT 480
+#define SCREEN_BPP    16	//Bits per pixel
 
 /*
  * Derp boolean definitions. We shouldn't need this!!!!
  */
-#define TRUE  1;
-#define FALSE 0;
+#define TRUE  1
+#define FALSE 0
 
 SDL_Surface *surface;
 
@@ -192,6 +192,40 @@ int main(int argc, char **argv){
     Quit(1);
   }
 
+  //Size the initial window
+  resizeWindow(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+  //Wait for events
+  while (!done){
+    //Iterate through all buffered events
+    while (SDL_PollEvent(&event)){
+      switch (event.type){
+      case SDL_ACTIVEEVENT:  //Change in focus
+	if (event.active.gain == 0)
+	  isActive = false;
+	else
+	  isActive = true;
+	break;
+      case SDL_VIDEORESIZE:
+	surface = SDL_SetVideoMode(event.resize.w, event.resize.h, SCREEN_BPP, videoFlags);
+	break;
+      case SDL_KEYDOWN:
+	handleKeyPress(&event.key.keysym);
+	break;
+      case SDL_QUIT:
+	done = TRUE;
+	break;
+      default:
+	break;
+      }
+    }
+    
+    //Redraw the screen after all events have been handled
+    if (isActive)
+      drawGLScene();
+  }
+
+  Quit(0);
 
   return 0;
 }
