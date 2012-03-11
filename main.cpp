@@ -146,7 +146,7 @@ int drawGLScene(){
   Frames ++;
   {
     GLint t = SDL_GetTicks();
-    if (Frames % 4000 == 0){
+    if (Frames % 100 == 0){
       GLfloat seconds = (t - T0) / 1000.0;
       GLfloat fps = Frames / seconds;
       printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
