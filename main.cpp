@@ -107,7 +107,33 @@ int drawGLScene(){
    * ALL DRAWING CODE GOES HERE
    */
 
-  //Placeholder
+  glRotatef((float) Frames / 100.0f, 0.0f, 0.0f, 1.0f);
+
+  glTranslatef(-1.5f, 0.0f, -6.0f);
+
+  glBegin(GL_TRIANGLE_FAN);
+  {
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glVertex3f(0.0f, 1.0f, 0.0f);
+    glColor3f(0.0f, 1.0f, 0.0f);
+    glVertex3f(-1.0f,-1.0f, 0.0f);
+    glColor3f(0.0f, 0.0f, 1.0f);
+    glVertex3f(1.0f, -1.0f, 0.0f);
+  }
+  glEnd();
+
+  glTranslatef(3.0f, 0.0f, 0.0f);
+
+  glColor3f(0.5f, 0.5f, 1.0f);
+  glBegin(GL_QUADS);
+  {
+    glVertex3f(-1.0f, 1.0f, 0.0f);
+    glVertex3f(1.0f, 1.0f, 0.0f);
+    glVertex3f(1.0f, -1.0f, 0.0f);
+    glVertex3f(-1.0f, -1.0f, 0.0f);
+  }
+  glEnd();
+  
 
   /*
    * END OF DRAWING CODE
@@ -120,7 +146,7 @@ int drawGLScene(){
   Frames ++;
   {
     GLint t = SDL_GetTicks();
-    if (t - T0 >= 5000){
+    if (Frames % 4000 == 0){
       GLfloat seconds = (t - T0) / 1000.0;
       GLfloat fps = Frames / seconds;
       printf("%d frames in %g seconds = %g FPS\n", Frames, seconds, fps);
