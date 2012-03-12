@@ -107,9 +107,9 @@ int drawGLScene(){
    * ALL DRAWING CODE GOES HERE
    */
 
-  glRotatef((float) Frames / 100.0f, 0.0f, 0.0f, 1.0f);
-
   glTranslatef(-1.5f, 0.0f, -6.0f);
+
+  glRotatef((float) Frames / 100.0f, 0.0f, 1.0f, 0.0f);
 
   glBegin(GL_TRIANGLE_FAN);
   {
@@ -122,7 +122,10 @@ int drawGLScene(){
   }
   glEnd();
 
-  glTranslatef(3.0f, 0.0f, 0.0f);
+  glLoadIdentity();
+  glTranslatef(1.0f, 0.0f, -6.0f);
+
+  glRotatef((float) Frames / 47.0f, 1.0f, 0.0f, 0.0f);
 
   glColor3f(0.5f, 0.5f, 1.0f);
   glBegin(GL_QUADS);
