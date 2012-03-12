@@ -23,6 +23,8 @@ using namespace std;
 
 SDL_Surface *surface;
 
+GLuint* tex1;
+
 /*
  * Exit the program, cleaning up all memory uses and returning to
  * the default desktop properly.
@@ -156,8 +158,9 @@ int drawGLScene(){
   glTranslatef(-1.5f, 0.0f, -6.0f);
 
   glRotatef((float) Frames / 100.0f, 0.0f, 1.0f, 0.0f);
-
-  GLuint* tex = LoadGLTexture("tex2.bmp");
+  
+  if (!tex1)
+    tex1 = LoadGLTexture("tex2.bmp");
 
   /* Triangle */
 
@@ -204,7 +207,7 @@ int drawGLScene(){
 
   glRotatef((float) Frames / 47.0f, 1.0f, 30.0f, 45.0f);
 
-  glBindTexture(GL_TEXTURE_2D, *tex);
+  glBindTexture(GL_TEXTURE_2D, *tex1);
 
   glEnable(GL_TEXTURE_2D);
 
