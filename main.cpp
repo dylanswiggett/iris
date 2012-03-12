@@ -4,6 +4,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 #include "SDL.h"
+#include <string>
 
 using namespace std;
 
@@ -30,6 +31,50 @@ void Quit(int returnCode){
   SDL_Quit();
   exit(returnCode);
 }
+
+/*
+ * Load a bitmap into a openGL Texture.
+ */
+GLuint* LoadGLTexture(char* path){
+  //Create storage for the image
+  SDL_Surface* TextureImage[1];
+
+  GLuint* texture = (GLuint*) malloc(sizeof(texture));
+
+  //Load the bitmap, check for errors, and convert to a texture
+  if ((TextureImage[0] = SDL_LoadBMP(path))){
+    //Generate the texture
+    glGenTextures(1, texture);
+
+    //Set up bitmap mapping to texture
+    glBindTexture(GL_TEXTURE_2D, *texture);
+
+    //Generate the texture itself
+    glTexImage2D(GL_TEXTURE_2D, 0, 3, TextureImage[0]->w, TextureImage[0]->h,
+		 0, GL_BGR, GL_UNSIGNED_BYTE, TextureImage[0]->pixels);
+
+    //Set up the images filtering
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  } else {
+    fprintf(stderr, "Error, failed to load texture %s", path);
+    Quit(0);
+    return NULL;
+  }
+
+  //Clean up
+  if (TextureImage[0])
+    SDL_FreeSurface(TextureImage[0]);
+
+  if (texture){
+    return texture;
+  } else {
+    fprintf(stderr, "Error, failed to load texture %s", path);
+    Quit(0);
+    return NULL;
+  }
+}
+
 
 /*
  * Resize the window, then recalculate the viewport.
@@ -83,6 +128,7 @@ int initGL(){
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClearDepth(1.0f);
   
+  //  glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -110,6 +156,8 @@ int drawGLScene(){
   glTranslatef(-1.5f, 0.0f, -6.0f);
 
   glRotatef((float) Frames / 100.0f, 0.0f, 1.0f, 0.0f);
+
+  GLuint* tex = LoadGLTexture("tex2.bmp");
 
   /* Triangle */
 
@@ -155,52 +203,83 @@ int drawGLScene(){
   glTranslatef(1.0f, 0.0f, -10.0f);
 
   glRotatef((float) Frames / 47.0f, 1.0f, 30.0f, 45.0f);
+
+  glBindTexture(GL_TEXTURE_2D, *tex);
+
+  glEnable(GL_TEXTURE_2D);
+
   glBegin(GL_QUADS);
   {
     //Front
     glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(1.0f, -1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(-1.0f, -1.0f, 1.0f);
 
     //Right
     glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(1.0f, -1.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(1.0f, -1.0f, 1.0f);
 
     //Back
     glColor3f(0.0f, 0.0f, 1.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-1.0f, -1.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(1.0f, -1.0f, -1.0f);
 
     //Left
     glColor3f(0.0f, 1.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(-1.0f, -1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(-1.0f, -1.0f, -1.0f);
 
     //Top
     glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(1.0f, 1.0f, 1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(-1.0f, 1.0f, 1.0f);
 
     //Bottom
     glColor3f(1.0f, 0.0f, 0.0f);
+    glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, -1.0f, 1.0f);
+    glTexCoord2f(0.0f, 1.0f);
     glVertex3f(1.0f, -1.0f, 1.0f);
+    glTexCoord2f(0.0f, 0.0f);
     glVertex3f(1.0f, -1.0f, -1.0f);
+    glTexCoord2f(1.0f, 0.0f);
     glVertex3f(-1.0f, -1.0f, -1.0f);
 
   }
   glEnd();
+
+  glDisable(GL_TEXTURE_2D);
   
 
   /*
