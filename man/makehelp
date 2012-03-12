@@ -1,1 +1,11 @@
-[help goes here]
+syntax: make [option]
+
+options:
+	help: displays this file
+	objects: compiles each file into an unlinked object
+	exe: links compiled objects into an executable
+	clean: removes residual object files
+	all: make {objects,exe,clean}
+	run: makes all and then runs the resulting executable
+	leak: analyzes program for memory leaks via valgrind
+	leaklog: same as above but records to a file instead of stdout
