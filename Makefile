@@ -7,6 +7,7 @@ MAIN := main
 CC := g++
 OUTPUT := iris
 LEAKFLAGS := --leak-check=full 
+LEAKFILE := log/leaklog
 
 help:
 	@cat man/makehelp
@@ -28,6 +29,10 @@ all:
 	@make -s exe
 	@make -s clean
 	@echo "compiled $(OUTPUT)!"
+
+run:
+	@make all
+	@./$(OUTPUT)
 
 leak:
 	@make -s all
