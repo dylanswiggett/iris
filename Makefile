@@ -42,5 +42,5 @@ leak:
 leaklog:
 	@make -s all
 	@echo "checking $(OUTPUT) for leaks and recording to $(LEAKFILE)"
+	@mkdir `echo $(LEAKFILE) | grep -Eo '^[^/]*'`
 	@valgrind $(LEAKFLAGS) --log-file=$(LEAKFILE) ./$(OUTPUT)
-
