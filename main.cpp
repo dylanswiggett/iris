@@ -25,6 +25,16 @@ SDL_Surface *surface;
 
 GLuint* tex1;
 
+bool light; //Light on
+bool lp; //L pressed
+bool fp; //R pressed
+
+GLfloat LightAmbient[] = {0.5f, 0.5f, 0.5f, 1.0f};
+GLfloat LightDiffuse[] = {1.0f, 1.0f, 1.0f, 1.0f};
+GLfloat LightPosition[] = {0.0f, 0.0f, 2.0f, 1.0f};
+
+bool keys[255];
+
 /*
  * Exit the program, cleaning up all memory uses and returning to
  * the default desktop properly.
@@ -57,7 +67,7 @@ GLuint* LoadGLTexture(char* path){
 
     //Set up the images filtering
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR_MIPMAP_NEAREST); //Use mipmapping for near/large textures
   } else {
     fprintf(stderr, "Error, failed to load texture %s", path);
     Quit(0);
@@ -130,10 +140,16 @@ int initGL(){
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
   glClearDepth(1.0f);
   
-  //  glEnable(GL_TEXTURE_2D);
   glEnable(GL_DEPTH_TEST);
   glDepthFunc(GL_LEQUAL);
   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+
+  //Set up lighting
+  glLightfv(GL_LIGHT1, GL_AMBIENT, LightAmbient);
+  glLightfv(GL_LIGHT1, GL_DIFFUSE, LightDiffuse);
+  glLightfv(GL_LIGHT1, GL_POSITION, LightPosition);
+  glEnable(GL_LIGHT1);
+  glEnable(GL_LIGHTING);
 
   return TRUE;
 }
@@ -160,10 +176,10 @@ int drawGLScene(){
   glRotatef((float) Frames / 100.0f, 0.0f, 1.0f, 0.0f);
   
   if (!tex1)
-    tex1 = LoadGLTexture("tex2.bmp");
+    tex1 = LoadGLTexture("tex.bmp");
 
   /* Triangle */
-
+  /*
   glBegin(GL_TRIANGLES);
   {
     //Front
@@ -201,7 +217,7 @@ int drawGLScene(){
 
   }
   glEnd();
-
+  */
   glLoadIdentity();
   glTranslatef(1.0f, 0.0f, -10.0f);
 
@@ -211,10 +227,13 @@ int drawGLScene(){
 
   glEnable(GL_TEXTURE_2D);
 
+  glColor3f(1.0f, 1.0f, 1.0f);
+
   glBegin(GL_QUADS);
   {
     //Front
-    glColor3f(0.0f, 0.0f, 1.0f);
+    //    glColor3f(0.0f, 0.0f, 1.0f);
+    glNormal3f(0.0f, 0.0f, 1.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, 1.0f);
     glTexCoord2f(0.0f, 1.0f);
@@ -225,7 +244,8 @@ int drawGLScene(){
     glVertex3f(-1.0f, -1.0f, 1.0f);
 
     //Right
-    glColor3f(0.0f, 1.0f, 0.0f);
+    //    glColor3f(0.0f, 1.0f, 0.0f);
+    glNormal3f(1.0f, 0.0f, 0.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, 1.0f);
     glTexCoord2f(0.0f, 1.0f);
@@ -236,7 +256,8 @@ int drawGLScene(){
     glVertex3f(1.0f, -1.0f, 1.0f);
 
     //Back
-    glColor3f(0.0f, 0.0f, 1.0f);
+    //    glColor3f(0.0f, 0.0f, 1.0f);
+    glNormal3f(0.0f, 0.0f, -1.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(1.0f, 1.0f, -1.0f);
     glTexCoord2f(0.0f, 1.0f);
@@ -247,7 +268,8 @@ int drawGLScene(){
     glVertex3f(1.0f, -1.0f, -1.0f);
 
     //Left
-    glColor3f(0.0f, 1.0f, 0.0f);
+    //    glColor3f(0.0f, 1.0f, 0.0f);
+    glNormal3f(-1.0f, 0.0f, 0.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f);
     glTexCoord2f(0.0f, 1.0f);
@@ -258,7 +280,8 @@ int drawGLScene(){
     glVertex3f(-1.0f, -1.0f, -1.0f);
 
     //Top
-    glColor3f(1.0f, 0.0f, 0.0f);
+    //    glColor3f(1.0f, 0.0f, 0.0f);
+    glNormal3f(0.0f, 1.0f, 0.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, 1.0f, -1.0f);
     glTexCoord2f(0.0f, 1.0f);
@@ -269,7 +292,8 @@ int drawGLScene(){
     glVertex3f(-1.0f, 1.0f, 1.0f);
 
     //Bottom
-    glColor3f(1.0f, 0.0f, 0.0f);
+    //    glColor3f(1.0f, 0.0f, 0.0f);
+    glNormal3f(0.0f, -1.0f, 0.0f);
     glTexCoord2f(1.0f, 1.0f);
     glVertex3f(-1.0f, -1.0f, 1.0f);
     glTexCoord2f(0.0f, 1.0f);
