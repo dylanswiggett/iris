@@ -151,6 +151,12 @@ int initGL(){
   glEnable(GL_LIGHT1);
   glEnable(GL_LIGHTING);
 
+  //Set up blending
+  glColor4f(1.0f, 1.0f, 1.0f, 0.5f);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_BLEND);
+
   return TRUE;
 }
 
@@ -410,11 +416,11 @@ int main(int argc, char **argv){
 	surface = SDL_SetVideoMode(event.resize.w, event.resize.h, SCREEN_BPP, videoFlags);
 	break;
       case SDL_KEYDOWN:
-	keys[event.key.keysym.sym] = true;
+	keys[event.key.keysym.sym] = true; //Store that the key is pressed
 	handleKeyPress(&event.key.keysym);
 	break;
       case SDL_KEYUP:
-	keys[event.key.keysym.sym] = false;
+	keys[event.key.keysym.sym] = false; //Store that the key has been released
 	break;
       case SDL_QUIT:
 	done = TRUE;
