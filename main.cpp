@@ -307,7 +307,7 @@ int drawGLScene(){
   glEnd();
 
   glDisable(GL_TEXTURE_2D);
-  
+
 
   /*
    * END OF DRAWING CODE
@@ -410,7 +410,11 @@ int main(int argc, char **argv){
 	surface = SDL_SetVideoMode(event.resize.w, event.resize.h, SCREEN_BPP, videoFlags);
 	break;
       case SDL_KEYDOWN:
+	keys[event.key.keysym.sym] = true;
 	handleKeyPress(&event.key.keysym);
+	break;
+      case SDL_KEYUP:
+	keys[event.key.keysym.sym] = false;
 	break;
       case SDL_QUIT:
 	done = TRUE;
